@@ -14,3 +14,4 @@ for block in blocks:
     print(block['type'])
     print(block['data'])
     print('---')
+
