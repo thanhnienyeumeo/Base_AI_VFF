@@ -86,7 +86,7 @@ class MF(object):
         ids = np.where(self.Y_data_n[:,0] == user_id)[0] 
         item_ids = self.Y_data_n[ids, 1].astype(np.int32) # indices need to be integers
         ratings = self.Y_data_n[ids, 2]
-        return (item_ids, ratings)
+        return (item_ids, ratings) 
         
         
     def get_users_who_rate_item(self, item_id):

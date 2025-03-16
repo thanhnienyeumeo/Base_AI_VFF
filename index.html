@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendation Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s ease infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fund Recommendation Demo</h1>
+        
+        <div class="card">
+            <h2>User-based Recommendations</h2>
+            <p>Enter a user ID to get personalized fund recommendations</p>
+            <input type="text" id="userId" placeholder="User ID">
+            <button onclick="recommendForUser()">Get Recommendations</button>
+        </div>
+        
+        <div class="card">
+            <h2>Fund-based Recommendations</h2>
+            <p>Enter a fund ID to get similar funds</p>
+            <input type="text" id="fundId" placeholder="Fund ID">
+            <label>
+                <input type="checkbox" id="updateSimilarity"> Update similarity matrix
+            </label>
+            <button onclick="recommendForFund()">Get Recommendations</button>
+        </div>
+        
+        <div class="card">
+            <h2>Results</h2>
+            <div id="spinner" class="spinner"></div>
+            <div id="results">Results will appear here...</div>
+        </div>
+    </div>
+
+    <script>
+        async function recommendForUser() {
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                alert('Please enter a user ID');
+                return;
+            }
+            
+            showSpinner();
+            try {
+                const response = await fetch(`/api/recommend/user/${encodeURIComponent(userId)}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    displayError(data);
+                }
+            } catch (error) {
+                displayError({ detail: error.message });
+            } finally {
+                hideSpinner();
+            }
+        }
+        
+        async function recommendForFund() {
+            const fundId = document.getElementById('fundId').value;
+            if (!fundId) {
+                alert('Please enter a fund ID');
+                return;
+            }
+            
+            const updateSimilarity = document.getElementById('updateSimilarity').checked;
+            
+            showSpinner();
+            try {
+                const response = await fetch(
+                    `/api/recommend/fund/${encodeURIComponent(fundId)}`, 
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ update: updateSimilarity })
+                    }
+                );
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    displayError(data);
+                }
+            } catch (error) {
+                displayError({ detail: error.message });
+            } finally {
+                hideSpinner();
+            }
+        }
+        
+        function displayResults(data) {
+            const resultsElement = document.getElementById('results');
+            if (data.funds && data.funds.length) {
+                resultsElement.innerHTML = '<h3>Recommended Funds:</h3>';
+                resultsElement.innerHTML += '<ul>';
+                data.funds.forEach(fund => {
+                    resultsElement.innerHTML += `<li>${fund}</li>`;
+                });
+                resultsElement.innerHTML += '</ul>';
+            } else {
+                resultsElement.innerHTML = 'No recommendations found';
+            }
+        }
+        
+        function displayError(data) {
+            const resultsElement = document.getElementById('results');
+            resultsElement.innerHTML = `<p style="color: red;">Error: ${data.detail || 'Unknown error'}</p>`;
+        }
+        
+        function showSpinner() {
+            document.getElementById('spinner').style.display = 'block';
+            document.getElementById('results').innerHTML = 'Loading...';
+        }
+        
+        function hideSpinner() {
+            document.getElementById('spinner').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
