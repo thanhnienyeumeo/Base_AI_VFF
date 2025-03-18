@@ -1,0 +1,7 @@
+DRIVER = ""
+SERVER = ""
+DATABASE = ""
+UID = ""
+PWD = ""
+ENCRYPT = ""
+TRUSTSERVERCERTIFICATE = ""

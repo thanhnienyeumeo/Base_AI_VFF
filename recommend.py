@@ -1,4 +1,4 @@
-
+from config import DRIVER, SERVER, DATABASE, UID, PWD, ENCRYPT, TRUSTSERVERCERTIFICATE
 from similarity import *
 import numpy as np
 #ánh xạ user_id và movie_id sang index
@@ -13,15 +13,15 @@ score_colab = 0.4
 score_matching = 0.15
 score_donate = 0.15
 score_outstanding = 0.2
-conn_str = (
-    "Driver={ODBC Driver 17 for SQL Server};"  # Driver SQL Server phù hợp với hệ điều hành của bạn
-    "Server=47.130.30.15;"  # Địa chỉ IP của server
-    "Database=VFundFuture;"  # Tên database bạn muốn kết nối
-    "UID=sa;"  # Tên người dùng (user)
-    "PWD=qjeF68CTt3UdVkxA;"  # Mật khẩu người dùng
-    "Encrypt=yes;"  # Mã hóa kết nối
-    "TrustServerCertificate=yes;"  # Tin tưởng chứng chỉ của server
-)
+conn_str = f"""
+    Driver={DRIVER};
+    Server={SERVER};
+    Database={DATABASE};
+    UID={UID};
+    PWD={PWD};
+    Encrypt={ENCRYPT};
+    TrustServerCertificate={TRUSTSERVERCERTIFICATE};
+"""
 
 conn = pyodbc.connect(conn_str)
 cursor = conn.cursor()
