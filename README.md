@@ -5,7 +5,7 @@ The main function to recommend
 Run this file to run the server on your local host
 
 
-## test.py
-The Api
+## Server.py
+The App 
 
 ##

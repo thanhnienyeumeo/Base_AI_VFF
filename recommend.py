@@ -81,6 +81,12 @@ def get_lastest_fund_clicked(cursor, user_id):
         cursor.execute('SELECT FundID FROM dbo.UserFund where UserID = ?  ORDER BY JoinTime DESC', user_id)
         fund_id = cursor.fetchone()
         return fund_id
+
+def get_name_of_fund(cursor, fund_id):
+        cursor.execute('SELECT FundName FROM dbo.Fund WHERE FundID = ?', fund_id)
+        fund_name = cursor.fetchone()
+        return fund_name
+
 class Recommend:
     def __init__(self, cursor = cursor):
         self.update = 1

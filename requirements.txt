@@ -1,2 +1,9 @@
 google-genai
-recommenders
+transformers == 4.48.2
+pandas
+numpy
+fastapi
+sentence_transformers
+pyodbc
+sklearn
+scipy
